@@ -27,5 +27,9 @@ Java并发相关的多线程案例
 <p> Balking模式Guarded Suspension保护暂停模式一样都需要守护条件。
 <p> 在Balking模式中，如果守护条件不成立，则立即中断处理。而后者是一直等待到可执行。
 
-### 并发模式-5：
+### 并发模式-5：Producer-Consumer模式：生产者消费者
+<p> 生产者消费者模式，即`N个线程进行生产，同时N个线程进行消费，两种角色通过内存缓冲区进行通信。`
+<p> 在Producer-Consumer模式，承担安全守护责任的是`Channel角色`。`Channel角色执行线程间的互斥处理，确保Producer角色正确地将Data角色传递给Consumer角色。`
+
+
 
