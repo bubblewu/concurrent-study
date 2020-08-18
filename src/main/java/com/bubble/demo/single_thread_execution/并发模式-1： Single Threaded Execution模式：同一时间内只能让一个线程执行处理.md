@@ -1,5 +1,5 @@
 [toc]
-# 并发模式-1：Single Threaded Execution模式：能通过这座桥的只能有一个人
+# 并发模式-1： Single Threaded Execution模式：同一时间内只能让一个线程执行处理
 
 Single Threaded Execution模式，即"以一个线程执行"。
 就像独木桥一样，同一时间内只允许一个人通过，**该模式用于设置限制，以确保同一时间内只能让一个线程执行处理。**
