@@ -1,9 +1,12 @@
 package com.bubble.demo.guarded_suspension;
 
+import com.bubble.common.exception.LivenessException;
+
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 请求存放队列
@@ -30,7 +33,11 @@ public class RequestQueueV2 {
     public synchronized Request getRequest() {
         Request request = null;
         try {
-            request = queue.take();
+//            request = queue.take();
+            request = queue.poll(10L, TimeUnit.SECONDS);
+            if (request == null) {
+                throw new LivenessException("thrown by:" + Thread.currentThread().getName());
+            }
         } catch (InterruptedException ignored) {
         }
         return request;
@@ -43,7 +50,11 @@ public class RequestQueueV2 {
      */
     public synchronized void putRequest(Request request) {
         try {
-            queue.put(request);
+//            queue.put(request);
+            boolean offered = queue.offer(request, 10L, TimeUnit.SECONDS);
+            if (!offered) {
+                throw new LivenessException("thrown by:" + Thread.currentThread().getName());
+            }
         } catch (InterruptedException ignored) {
         }
     }

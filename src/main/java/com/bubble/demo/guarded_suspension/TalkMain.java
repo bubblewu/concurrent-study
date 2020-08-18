@@ -9,8 +9,8 @@ public class TalkMain {
     public static void main(String[] args) {
         RequestQueue input = new RequestQueue();
         RequestQueue output = new RequestQueue();
-        input.putRequest(new Request("hello"));
-        // 发生死锁
+//        input.putRequest(new Request("hello"));
+        // 如不先input添加请求，会发生死锁
         // A等待B发生请求，B等待A发送请求
         new TalkThread(input, output, "A").start();
         new TalkThread(output, input, "B").start();

@@ -1,5 +1,7 @@
 package com.bubble.demo.guarded_suspension;
 
+import com.bubble.common.exception.LivenessException;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -10,6 +12,8 @@ import java.util.Queue;
  * date: 2020-08-17 18:25
  **/
 public class RequestQueue {
+    private static final long TIMEOUT = 10 * 1000L;
+
     /**
      * FIFO队列，存放请求。
      * LinkedList是非线程安全的。
@@ -27,16 +31,25 @@ public class RequestQueue {
      * @return 最先存放的那个请求
      */
     public synchronized Request getRequest() {
+        // 开始时间
+        long start = System.currentTimeMillis();
         // 如队列存在元素，就会返回头元素（不删除）；如为空，则返回null
         // 也就是Guarded Suspension模式中的守护条件，即目前进行处理的前置条件
         while (queue.peek() == null) {
+            // 当前时间
+            long now = System.currentTimeMillis();
+            // 剩余的等待时间
+            long rest = TIMEOUT - (now - start);
+            if (rest <= 0) {
+                throw new LivenessException("thrown by:" + Thread.currentThread().getName());
+            }
             try {
                 // 线程要执行某个实例的wait方法时，线程必须获取该实例的锁。
                 // wait方法被调用时，获取的时this的锁。
                 // 执行this的wait方法后，线程进入this的等待队列，并释放持有的this锁。
                 // notify、notifyAll或interrupt会让线程退出等待队列，但在实际地继续执行处理之前，还必须再获取this的锁。
                 System.out.println("Wait: " + Thread.currentThread().getName() + ": wait begin, queue = " + queue);
-                wait();
+                wait(rest);
                 System.out.println("Wait: " + Thread.currentThread().getName() + ": wait end, queue = " + queue);
             } catch (InterruptedException ignored) {
             }
