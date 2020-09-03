@@ -9,14 +9,14 @@ import java.util.concurrent.TimeUnit;
  * @author wugang
  * date: 2020-08-05 10:45
  **/
-public class CustomRunnable implements Runnable {
+public class OtherRunnable implements Runnable {
 
     @Override
     public void run() {
         String name = Thread.currentThread().getName();
-        System.out.println("CustomRunnable > " + name + " Start: " + LocalDateTime.now().toString());
+        System.out.println("OtherRunnable > " + name + " Start: " + LocalDateTime.now().toString());
         doSomething();
-        System.out.println("> CustomRunnable " + name + " End: " + LocalDateTime.now().toString());
+        System.out.println("> OtherRunnable " + name + " End: " + LocalDateTime.now().toString());
     }
 
     private void doSomething() {

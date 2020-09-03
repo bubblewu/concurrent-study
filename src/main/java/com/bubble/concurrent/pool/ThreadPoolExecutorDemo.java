@@ -17,12 +17,12 @@ import java.util.concurrent.TimeUnit;
 public class ThreadPoolExecutorDemo {
     private static final int CORE_POOL_SIZE = 5;
     private static final int MAX_POOL_SIZE = 10;
-    private static final long KEEP_ALIVE_TIME = 1L;
+    private static final long KEEP_ALIVE_TIME = 10L;
     private static final int QUEUE_SIZE = 100;
 
 
     /**
-     * 指定了核心线程数为5个，所以，线程池每次会同时执行5个任务，这5个任务执行完成之后，剩余的5个任务才会被执行。
+     * 执行10个线程时：指定了核心线程数为5个，所以，线程池每次会同时执行5个任务，这5个任务执行完成之后，剩余的5个任务才会被执行。
      *
      * @param args
      */
@@ -46,13 +46,17 @@ public class ThreadPoolExecutorDemo {
                 new ArrayBlockingQueue<>(QUEUE_SIZE),
                 new ThreadPoolExecutor.CallerRunsPolicy()
         );
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < CORE_POOL_SIZE; i++) {
             Runnable worker = new CustomRunnable();
             // execute()方法：用于提交不需要返回值的任务到线程池，所以无法判断任务是否被线程池执行成功；
             executor.execute(worker);
-        }
-        executor.shutdown();
 
+            OtherRunnable other = new OtherRunnable();
+            executor.execute(other);
+//            new Thread(other, "T-").start();
+        }
+
+        executor.shutdown();
         while (!executor.isTerminated()) {
             try {
                 TimeUnit.MILLISECONDS.sleep(100);
