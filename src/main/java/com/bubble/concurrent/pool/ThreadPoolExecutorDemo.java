@@ -1,5 +1,6 @@
 package com.bubble.concurrent.pool;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -65,6 +66,52 @@ public class ThreadPoolExecutorDemo {
             }
         }
         System.out.println("Finished all threads");
+    }
+
+    /**
+     * 自定义一个简单的Runnable类
+     *
+     * @author wugang
+     * date: 2020-08-05 10:45
+     **/
+    private static class CustomRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            String name = Thread.currentThread().getName();
+            System.out.println("CustomRunnable > " + name + " Start: " + LocalDateTime.now().toString());
+            doSomething();
+            System.out.println("> CustomRunnable " + name + " End: " + LocalDateTime.now().toString());
+        }
+
+        private void doSomething() {
+            try {
+                TimeUnit.SECONDS.sleep(5);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    private static class OtherRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            String name = Thread.currentThread().getName();
+            System.out.println("OtherRunnable > " + name + " Start: " + LocalDateTime.now().toString());
+            doSomething();
+            System.out.println("> OtherRunnable " + name + " End: " + LocalDateTime.now().toString());
+        }
+
+        private void doSomething() {
+            try {
+                TimeUnit.SECONDS.sleep(5);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
 }
