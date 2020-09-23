@@ -23,9 +23,11 @@ public class SumTaskDemo {
     }
 
     static class SumTask extends RecursiveTask<Long> {
+        private static final long serialVersionUID = -7983575829281192803L;
+
         private final static int THRESHOLD = 10;
-        private long start;
-        private long end;
+        private final long start;
+        private final long end;
 
         public SumTask(long start, long end) {
             this.start = start;
@@ -41,7 +43,8 @@ public class SumTaskDemo {
                     sum += i;
                 }
             } else {
-                long mid = (start + end) / 2;
+//                long mid = (start + end) / 2;
+                long mid = (start + end) >>> 1;
                 // 分治、递归
                 SumTask left = new SumTask(start, mid);
                 SumTask right = new SumTask(mid + 1, end);

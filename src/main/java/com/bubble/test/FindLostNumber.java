@@ -1,4 +1,4 @@
-package com.bubble;
+package com.bubble.test;
 
 import java.util.HashMap;
 
