@@ -1,5 +1,8 @@
 package com.bubble.test;
 
+import com.bubble.common.annotation.Recommend;
+import com.bubble.common.annotation.ThreadSafe;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -8,9 +11,13 @@ import java.util.Map;
 import java.util.concurrent.*;
 
 /**
+ * 多线程下ConcurrentHashMap涉及读写时的线程安全的推荐写法
+ *
  * @author wugang
  * date: 2020-09-20 15:50
  **/
+@Recommend
+@ThreadSafe
 public class GetWordCount {
 
     public static void main(String[] args) throws InterruptedException {
@@ -74,10 +81,13 @@ public class GetWordCount {
                 dataList.forEach(line -> {
                     String[] lines = line.split(" ");
                     for (String word : lines) {
-                        if (countMap.containsKey(word)) {
-                            countMap.put(word, countMap.get(word) + 1);
-                        } else {
-                            countMap.put(word, 1);
+                        if (countMap.computeIfPresent(word, (k, v) -> v + 1) == null) {
+                            // 注意：需锁定类，不能this对象实例，不然多线程下每次都会生成新的对象实例，加锁无效
+                            synchronized (Reader.class) {
+                                if (countMap.computeIfPresent(word, (k, v) -> v + 1) == null) {
+                                    countMap.putIfAbsent(word, 1);
+                                }
+                            }
                         }
                     }
                 });
